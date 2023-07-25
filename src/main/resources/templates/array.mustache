@@ -6,8 +6,11 @@
     <title>Document</title>
 </head>
 <body>
+    {{list.0}}
     <h1>tset 파일 연결 확인</h1>
-    <h2>{{username}}</h2>
+    {{#list}}
+    {{.}}
+    {{/list}}
     
 </body>
 </html>
