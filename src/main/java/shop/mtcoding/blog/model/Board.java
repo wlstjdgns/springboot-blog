@@ -1,6 +1,6 @@
 package shop.mtcoding.blog.model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,10 +13,10 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @Table(name = "board_tb")
-@Entity // * ddl - auto 가 create
+@Entity // ddl-auto가 create
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +25,9 @@ public class Board {
     @Column(nullable = false, length = 100)
     private String title;
     @Column(nullable = true, length = 10000)
-    private String Content;
-    private Timestamp creatAt;
+    private String content;
+    private Timestamp createdAt;
+
     @ManyToOne
     private User user;
-
 }

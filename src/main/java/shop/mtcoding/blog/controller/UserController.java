@@ -78,22 +78,22 @@ public class UserController {
     @PostMapping("/login") // * POST메서드로 엔드포인트에 요청이 오면 login메서드가 실행
     public String login(LoginDTO loginDTO) { // * 요청으로부터 전달된 LoginDTO객체를 파라미터로 받는다. / LoginDTO는 사용자 로그인 정보를 담은 전송 객체 */
         // $ 부가로직 (유효성검사)
-        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {// *username이 null이거나 비어있으면 /40x 로간다.
-                                                                                 // */
+        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {// *username이 null이거나 비어있으면 /40x로 간다.
+
             return "redirect:/40x";
         } // ? validation check(유효성검사)
-        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
+        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {// * password가 null이거나 비어있으면 /40x로 간다.
             return "redirect:/40x";
         }
         // $ 핵심 로직
 
         try {
             User user = userRepository.findByUsernameAndPassword(loginDTO);
-            session.setAttribute("sessionUser", user);
-            return "redirect:/";
+            session.setAttribute("sessionUser", user); // * 세션에 유저정보를 저장한 후, "/" 경로로 반환한다.
+            return "redirect:/"; // * redirect : 클라이언트에게 다른 URL로 이동하라는 것
 
-        } catch (Exception e) {
-            return "redirect:/exLogin";
+        } catch (Exception e) { // * 유저를 못찾거나 예외 발생 시
+            return "redirect:/exLogin"; // * 해당 경로로 이동
 
         }
 

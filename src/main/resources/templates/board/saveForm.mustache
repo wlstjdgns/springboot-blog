@@ -1,26 +1,28 @@
 {{> /layout/header}}
 
 <div class="container p-5">
-
     <!-- 폼태그는 기본적으로 Get요청
         인서트 할때는 post 요청 enctype은 요청시 localhost:8080/board/save post로 요청됨
         title = 사용자입력값 & content=사용자값
     submit태그는 항상폼 안에 있어야한다.
 폼태그의 역할 인풋에작성된걸 한번에 전송하려고. xwww는 왜쓰지? 이런거 면접에 다 나와-->
+
+    <!-- 요청을 하면 localhost:8080/board/save POST로 요청됨
+    title=사용자입력값&content=사용자값 -->
     <div class="card">
-        <div class="card-header">글쓰기 화면입니다.</div>
+        <div class="card-header"><b>글쓰기 화면입니다</b></div>
         <div class="card-body">
             <form action="/board/save" method="post" enctype="application/x-www-form-urlencoded">
-                <div class="mb-3 mt-3">
+                <div class="mb-3">
                     <input type="text" class="form-control" placeholder="Enter title" name="title" required maxlength="100">
                 </div>
                 <div class="mb-3">
-                    <textarea class="form-control" rows="5" id="comment" name="content"></textarea>
+                    <textarea class="form-control" rows="5" name="content"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">등록하기</button>
+                <button type="submit" class="btn btn-primary form-control">글쓰기완료</button>
+            </form>
         </div>
-
-        </form>
     </div>
+</div>
 
-    {{> /layout/footer}}
+{{> /layout/footer}}

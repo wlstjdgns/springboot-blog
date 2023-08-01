@@ -1,56 +1,65 @@
 {{> /layout/header}}
-<style>
-.button-group {
-    display: flex;
-    justify-content: flex-end;
-    /* 또는 justify-content: space-between; 으로 변경하여 두 버튼 사이를 간격을 두고 배치할 수도 있습니다. */
-}
-
-.button-group button {
-    margin-left: 5px;
-}
-.box {
-    display: inline-block;
-    justify-content: space-between;
-    background-color: lightgray; /* 원하는 배경색으로 설정 */
-    width: 100%;
-    box-sizing: border-box;
-}
-
-
-
-</style>
-
 
 <div class="container p-5">
- <div class="button-group">
-                    <button type="button" class="btn btn-warning">수정</button>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </div>
-                <br>
-<div><h2 style="font-weight: bold;">제목 가져오기</h2></div>
-<div class="box"><h7 style="font-size: 20px;">&nbsp;ssar&nbsp;<h7> 
-<h10 style="font-size: 11px;">5분전 조회수:1000<h10></div>
-<div>내용 가져오기</div> 
-
     <!-- 폼태그는 기본적으로 Get요청
         인서트 할때는 post 요청 enctype은 요청시 localhost:8080/board/save post로 요청됨
         title = 사용자입력값 & content=사용자값
     submit태그는 항상폼 안에 있어야한다.
-//! 폼태그의 역할 인풋에작성된걸 한번에 전송하려고. xwww는 왜쓰지? 이런거 면접에 다 나와-->
-    <div class="card">
-        <div class="card-body">
-            <form action="/board/detail" method="post" enctype="application/x-www-form-urlencoded">
-                <div class="mb-3 mt-3">
-                    <input type="text" class="form-control" placeholder="Enter title" name="상세보기">
-                </div>
-                <div class="mb-3">
-                    <textarea class="form-control" rows="5" id="comment" name="content"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">등록하기</button>
-        </div>
-
-        </form>
+폼태그의 역할 인풋에작성된걸 한번에 전송하려고. xwww는 왜쓰지? 이런거 면접에 다 나와-->
+    <!-- 수정삭제버튼 -->
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-warning me-1">수정</button>
+        <button class="btn btn-danger">삭제</button>
     </div>
 
-    {{> /layout/footer}}
+    <!-- 게시글내용 -->
+    <div>
+        <h2><b>제목자리</b></h2>
+        <hr />
+        <div class="m-4 p-2">
+            내용입니다
+        </div>
+    </div>
+
+    <!-- 댓글 -->
+    <div class="card mt-3">
+        <!-- 댓글등록 -->
+        <div class="card-body">
+            <form action="/reply/save" method="post">
+                <textarea class="form-control" rows="2" name="comment"></textarea>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-outline-primary mt-1">댓글등록</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 댓글목록 -->
+        <div class="card-footer">
+            <b>댓글리스트</b>
+        </div>
+        <div class="list-group">
+            <!-- 댓글아이템 -->
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <div class="px-1 me-1 bg-primary text-white rounded">cos</div>
+                    <div>댓글 내용입니다</div>
+                </div>
+                <form action="/reply/1/delete" method="post">
+                    <button class="btn">🗑</button>
+                </form>
+            </div>
+            <!-- 댓글아이템 -->
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <div class="px-1 me-1 bg-primary text-white rounded">ssar</div>
+                    <div>댓글 내용입니다</div>
+                </div>
+                <form action="/reply/1/delete" method="post">
+                    <button class="btn">🗑</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{> /layout/footer}}

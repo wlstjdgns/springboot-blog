@@ -1,6 +1,5 @@
 package shop.mtcoding.blog.repository;
 
-import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -21,7 +20,6 @@ public class UserRepository {
     @Autowired
     private EntityManager em; // * 예전의 DB커넥션
 
-    @Transactional
     public User findByUsernameAndPassword(LoginDTO loginDTO) {
         System.out.println("테스트1");
         Query query = em.createNativeQuery("select * from user_tb where username=:username and password=:password",
