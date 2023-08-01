@@ -19,10 +19,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "user_tb")
-@Entity // ddl - auto 가 create
+@Entity // * ddl - auto 가 create
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 오토인클리먼트 적용됩니다.
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // * 오토인클리먼트 적용됩니다.
     @Column(unique = true)
     private Integer id;
 
