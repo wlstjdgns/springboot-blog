@@ -14,4 +14,10 @@ public class ErrorController {
     public String ex50x() {
         return "error/ex50x";
     }
+
+    @GetMapping("/exLogin") // * 엔드포인트로 오는 get 요청을 처리하는 메서드 */
+    public String exLogin() {
+        return "error/exLogin"; // *해당 뷰를 사용하여 로그인 오류와 관련된 정보를 보여줄 수 있도록 */
+    }
+
 }

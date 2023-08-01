@@ -1,11 +1,16 @@
 package shop.mtcoding.blog.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.JoinDTO;
+import shop.mtcoding.blog.dto.LoginDTO;
+import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.repository.UserRepository;
 
 @Controller
@@ -55,6 +60,44 @@ public class UserController {
 
     @Autowired // $ 레파지토리에 의존시켜줘야해
     private UserRepository userRepository;
+
+    @Autowired // $ IoC컨테이너에 넣는다.
+    private HttpSession session;// * requset는 가방, session은 서랍 */
+
+    @ResponseBody
+    @GetMapping("/test/login")
+    public String testLogin() {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if (sessionUser == null) {
+            return "로그인이 되지 않았습니다";
+        } else {
+            return "로그인 됨 : " + sessionUser.getUsername();
+        }
+    }
+
+    @PostMapping("/login") // * POST메서드로 엔드포인트에 요청이 오면 login메서드가 실행
+    public String login(LoginDTO loginDTO) { // * 요청으로부터 전달된 LoginDTO객체를 파라미터로 받는다. / LoginDTO는 사용자 로그인 정보를 담은 전송 객체 */
+        // $ 부가로직 (유효성검사)
+        if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {// *username이 null이거나 비어있으면 /40x 로간다.
+                                                                                 // */
+            return "redirect:/40x";
+        } // ? validation check(유효성검사)
+        if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {
+            return "redirect:/40x";
+        }
+        // $ 핵심 로직
+
+        try {
+            User user = userRepository.findByUsernameAndPassword(loginDTO);
+            session.setAttribute("sessionUser", user);
+            return "redirect:/";
+
+        } catch (Exception e) {
+            return "redirect:/exLogin";
+
+        }
+
+    }
 
     // ! 실무
     @PostMapping("/join")
