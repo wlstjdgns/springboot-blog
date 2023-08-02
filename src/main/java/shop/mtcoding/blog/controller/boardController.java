@@ -35,7 +35,14 @@ public class BoardController {
         // 1. 유효성 검사 X
         // 2. 인증검사 X
 
-        List<Board> boardList = boardRepository.findAll(page);
+        List<Board> boardList = boardRepository.findAll(page); // * page = 1
+        int totalCount = boardRepository.count(); // * totalCount = 5
+        int totalPage = totalCount / 3; // * totalPage = 1
+        if (totalCount % 3 > 0) {
+            totalPage = totalPage + 1; // * totalPage = 2
+        }
+        boolean last = totalPage == page + 1;
+
         System.out.println("테스트 :" + boardList.size());
         System.out.println("테스트 :" + boardList.get(0).getTitle());
 
@@ -43,7 +50,9 @@ public class BoardController {
         request.setAttribute("prevPage", page - 1);
         request.setAttribute("nextPage", page + 1);
         request.setAttribute("first", page == 0 ? true : false);
-        request.setAttribute("last", false);
+        request.setAttribute("last", last);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("totalCount", totalCount);
 
         return "index";
     }
@@ -63,7 +72,6 @@ public class BoardController {
         if (sessionUser == null) {
             return "redirect:/loginForm";
         }
-
         boardRepository.save(writeDTO, sessionUser.getId());
         return "redirect:/";
     }
@@ -81,7 +89,6 @@ public class BoardController {
     // localhost:8080/board/50
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id) {
-
         return "board/detail";
     }
 }
