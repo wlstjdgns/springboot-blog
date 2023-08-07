@@ -1,8 +1,11 @@
 package shop.mtcoding.blog.controller;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +67,20 @@ public class UserController {
     @Autowired // $ IoC컨테이너에 넣는다.
     private HttpSession session;// * requset는 가방, session은 서랍 */
 
+    // localhost:8080/check?username=ssar
+    @GetMapping("/check") // ResponseEntity는 responsebody를 안붙여도 데이터를 응답하게 해줘 스트링타입의 바디를.
+    // 첫번재로 안붙여도 되고 두번째로 리스폰스에다가 내가 직접 안넣어줘도 돼 뭘?선택권을
+    public ResponseEntity<String> check(String username, HttpServletResponse response) {
+        try {
+            userRepository.findByUsername(username);
+            return new ResponseEntity<>("중복됨", HttpStatus.BAD_REQUEST); // 응답될 내용과 상태코드이다. 눌러보면 400코드 //조금더자세히 보고싶으면
+                                                                        // 바디데이터를 보라는거야
+        } catch (Exception e) {
+            return new ResponseEntity<>("중복되지 않음", HttpStatus.OK); // 눌러보면 200코드
+
+        }
+    }
+
     @ResponseBody
     @GetMapping("/test/login")
     public String testLogin() {
@@ -77,15 +94,15 @@ public class UserController {
 
     @PostMapping("/login") // * POST메서드로 엔드포인트에 요청이 오면 login메서드가 실행
     public String login(LoginDTO loginDTO) { // * 요청으로부터 전달된 LoginDTO객체를 파라미터로 받는다. / LoginDTO는 사용자 로그인 정보를 담은 전송 객체 */
-        // $ 부가로직 (유효성검사)
+        // ! 부가로직 (유효성검사)
         if (loginDTO.getUsername() == null || loginDTO.getUsername().isEmpty()) {// *username이 null이거나 비어있으면 /40x로 간다.
 
             return "redirect:/40x";
-        } // ? validation check(유효성검사)
+        } // * validation check(유효성검사)
         if (loginDTO.getPassword() == null || loginDTO.getPassword().isEmpty()) {// * password가 null이거나 비어있으면 /40x로 간다.
             return "redirect:/40x";
         }
-        // $ 핵심 로직
+        // ! 핵심 로직
 
         try {
             User user = userRepository.findByUsernameAndPassword(loginDTO);
@@ -112,14 +129,30 @@ public class UserController {
             return "redirect:/40x";
         }
 
+        // 굳이 트랜잭션을 타지 않도록 미리 잡초제거를 해주는 거야
+        // 진짜 DB에 해당 username이 있는지 체크해보기 check!
+        // if (user != null) {
+        // return "redirect:/50x";
+        // }
         try {
-            userRepository.save(joinDTO); // * 디비에 접근해서 비지니스 로직처리하는 모든걸 모델이라고 한다. 추상적인 의미인것
+            // ssar 넣으면 터지고
+            userRepository.findByUsername(joinDTO.getUsername());
+            return "redirect:/50x";
 
         } catch (Exception e) {
-            return "redirect:/50x";
+            // ssar1 넣으면 터지겠지
+            userRepository.save(joinDTO);
+            return "redirect:/loginForm";
         }
 
-        return "redirect:/loginForm";
+        // try { //*아직 내가 상상하지 못하는 오류들만 트라이/캐치로 잡는거고 미리 잡을수있는 애들은 미리 잡아줘야해 */
+        // userRepository.save(joinDTO); // * 디비에 접근해서 비지니스 로직처리하는 모든걸 모델이라고 한다. 추상적인
+        // 의미인것
+
+        // } catch (Exception e) {
+        // return "redirect:/50x"; // 알고 있는데 터뜨릴필요는 없다. 미리 예방을 해야지....
+        // }
+
     }
 
     // * ip주소 부여: 10.5.9.200:8080 -> mtcoding.com:8080을 돈주고 사 내아이피랑 연결하는거야
