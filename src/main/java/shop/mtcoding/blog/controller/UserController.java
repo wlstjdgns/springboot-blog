@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.controller;
 
+import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -67,18 +68,39 @@ public class UserController {
     @Autowired // $ IoC컨테이너에 넣는다.
     private HttpSession session;// * requset는 가방, session은 서랍 */
 
-    // localhost:8080/check?username=ssar
-    @GetMapping("/check") // ResponseEntity는 responsebody를 안붙여도 데이터를 응답하게 해줘 스트링타입의 바디를.
-    // 첫번재로 안붙여도 되고 두번째로 리스폰스에다가 내가 직접 안넣어줘도 돼 뭘?선택권을
-    public ResponseEntity<String> check(String username, HttpServletResponse response) {
-        try {
-            userRepository.findByUsername(username);
-            return new ResponseEntity<>("중복됨", HttpStatus.BAD_REQUEST); // 응답될 내용과 상태코드이다. 눌러보면 400코드 //조금더자세히 보고싶으면
-                                                                        // 바디데이터를 보라는거야
-        } catch (Exception e) {
-            return new ResponseEntity<>("중복되지 않음", HttpStatus.OK); // 눌러보면 200코드
+    // // localhost:8080/check?username=ssar
+    // @GetMapping("/check") // ResponseEntity는 responsebody를 안붙여도 데이터를 응답하게 해줘
+    // 스트링타입의 바디를.
+    // // 첫번재로 안붙여도 되고 두번째로 리스폰스에다가 내가 직접 안넣어줘도 돼 뭘?선택권을
+    // public ResponseEntity<String> check(String username) {
+    // try {
+    // Query query = em.createNativeQuery)
+    // userRepository.findByUsername(username);
+    // return new ResponseEntity<>("중복됨", HttpStatus.BAD_REQUEST); // 응답될 내용과
+    // 상태코드이다. 눌러보면 400코드 //조금더자세히 보고싶으면
+    // // 바디데이터를 보라는거야
+    // } catch (Exception e) {
+    // return new ResponseEntity<>("중복되지 않음", HttpStatus.OK); // 눌러보면 200코드
 
+    // }
+    // }
+    // localhost:8080/check?username=ssar
+    // @GetMapping("/check")
+    // public ResponseEntity<String> check(String username) {
+    // User user = userRepository.findByUsername(username);
+    // if (user != null) {
+    // return new ResponseEntity<String>("유저네임이 중복 되었습니다", HttpStatus.BAD_REQUEST);
+    // }
+    // return new ResponseEntity<String>("유저네임을 사용할 수 있습니다", HttpStatus.OK);
+    // }
+    // localhost:8080/check?username=ssar
+    @GetMapping("/check")
+    public ResponseEntity<String> check(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return new ResponseEntity<String>("유저네임이 중복 되었습니다", HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<String>("유저네임을 사용할 수 있습니다", HttpStatus.OK);
     }
 
     @ResponseBody
@@ -134,26 +156,31 @@ public class UserController {
         // if (user != null) {
         // return "redirect:/50x";
         // }
-        try {
-            // ssar 넣으면 터지고
-            userRepository.findByUsername(joinDTO.getUsername());
+        User user = userRepository.findByUsername(joinDTO.getUsername());
+        if (user != null) {
             return "redirect:/50x";
-
-        } catch (Exception e) {
-            // ssar1 넣으면 터지겠지
-            userRepository.save(joinDTO);
-            return "redirect:/loginForm";
         }
-
-        // try { //*아직 내가 상상하지 못하는 오류들만 트라이/캐치로 잡는거고 미리 잡을수있는 애들은 미리 잡아줘야해 */
-        // userRepository.save(joinDTO); // * 디비에 접근해서 비지니스 로직처리하는 모든걸 모델이라고 한다. 추상적인
-        // 의미인것
-
-        // } catch (Exception e) {
-        // return "redirect:/50x"; // 알고 있는데 터뜨릴필요는 없다. 미리 예방을 해야지....
-        // }
-
+        userRepository.save(joinDTO); // 핵심 기능
+        return "redirect:/loginForm";
     }
+    // try {
+    // // ssar 넣으면 터지고
+    // userRepository.findByUsername(joinDTO.getUsername());
+    // return "redirect:/50x";
+
+    // } catch (Exception e) {
+    // // ssar1 넣으면 터지겠지
+    // userRepository.save(joinDTO);
+    // return "redirect:/loginForm";
+    // }
+
+    // try { //*아직 내가 상상하지 못하는 오류들만 트라이/캐치로 잡는거고 미리 잡을수있는 애들은 미리 잡아줘야해 */
+    // userRepository.save(joinDTO); // * 디비에 접근해서 비지니스 로직처리하는 모든걸 모델이라고 한다. 추상적인
+    // 의미인것
+
+    // } catch (Exception e) {
+    // return "redirect:/50x"; // 알고 있는데 터뜨릴필요는 없다. 미리 예방을 해야지....
+    // }
 
     // * ip주소 부여: 10.5.9.200:8080 -> mtcoding.com:8080을 돈주고 사 내아이피랑 연결하는거야
     // * localhost,127.0.0.1
