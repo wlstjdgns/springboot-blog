@@ -42,4 +42,13 @@ public class ReplyRepository {
         System.out.println("댓글쓰기완료4");
 
     }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        Query query = em
+                .createNativeQuery(
+                        "delete from reply_tb where id = :id");
+        query.setParameter("id", id);
+        query.executeUpdate();
+    }
 }
