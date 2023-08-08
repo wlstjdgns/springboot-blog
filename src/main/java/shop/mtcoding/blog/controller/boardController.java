@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import shop.mtcoding.blog.dto.UpdateDTO;
 import shop.mtcoding.blog.dto.WriteDTO;
 import shop.mtcoding.blog.model.Board;
+import shop.mtcoding.blog.model.Reply;
 import shop.mtcoding.blog.model.User;
 import shop.mtcoding.blog.repository.BoardRepository;
 
@@ -25,8 +27,21 @@ public class BoardController {
     private HttpSession session;
 
     @Autowired
-
     private BoardRepository boardRepository;
+
+    @ResponseBody
+    @GetMapping("/test/board/1")
+    public Board test() {
+        Board board = boardRepository.findById(1);
+        return board;
+    }
+
+    @ResponseBody
+    @GetMapping("/test/reply")
+    public List<Reply> test2() {
+        List<Reply> replys = replyRepository.findByBoardId(1);
+        return replys;
+    }
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, UpdateDTO updateDTO) {
