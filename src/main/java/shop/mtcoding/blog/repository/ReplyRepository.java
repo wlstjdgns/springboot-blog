@@ -24,22 +24,24 @@ public class ReplyRepository {
         return query.getResultList();
     }
 
+    public List<Reply> findByUserId(Integer userId) {
+        Query query = em.createNativeQuery("select * from reply_tb where user_id = :userId", Reply.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
     @Transactional // * 트랜잭션이 적용된 프록시 객체 생성 /프록시 객체는 해당 어노테이션이 포함된 메서드가 호출될 경우
     // * 트랜잭션을 시작하고 커밋 or 롤백을 수행한다. CheckedExcoption or 기준 커밋/롤백
     public void save(ReplyWriteDTO replyWriteDTO, Integer userId) {// $ 컨트롤러가 디비인서트하려고 받은걸 얘가 전달 받아야하는거야.
-        System.out.println("댓글쓰기완료1");
 
         Query query = em
                 .createNativeQuery("insert into reply_tb(comment,board_id,user_id) values(:comment,:boardId,:userId) ");
-        System.out.println("댓글쓰기완료2");
 
         query.setParameter("comment", replyWriteDTO.getComment());
         query.setParameter("boardId", replyWriteDTO.getBoardId());
         query.setParameter("userId", userId);
-        System.out.println("댓글쓰기완료3");
 
         query.executeUpdate(); // * mall참고 //* 쿼리를 전송 */ 쿼리를 DBMS에게 한다.
-        System.out.println("댓글쓰기완료4");
 
     }
 

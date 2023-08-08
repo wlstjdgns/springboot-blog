@@ -187,6 +187,8 @@ public class BoardController {
 
         request.setAttribute("dtos", dtos);
         request.setAttribute("pageOwner", pageOwner);
+
+        System.out.println("test" + dtos.get(0).getBoardId());
         return "board/detail"; // V
     }
 }

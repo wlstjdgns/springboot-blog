@@ -52,7 +52,9 @@
                     <div>{{replyComment}}</div>
                 </div>
                  {{! {{#replyOwner}} 
-                <form action="/reply/{id}/delete" method="post">
+                <form action="/reply/{{replyId}}/delete" method="post">
+                  <input type="hidden" name="boardId" value="{{boardId}}">
+                  <input type="hidden" name="replyUserId" value="{{replyUserId}}">
                     <button class="btn">🗑</button>
                 </form>
                 {{! {{/replyOwner}} 

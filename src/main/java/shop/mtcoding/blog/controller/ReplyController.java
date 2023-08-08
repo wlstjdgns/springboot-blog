@@ -1,12 +1,17 @@
 package shop.mtcoding.blog.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.blog.dto.BoardDetailDTO;
 import shop.mtcoding.blog.dto.ReplyWriteDTO;
 import shop.mtcoding.blog.model.Board;
 import shop.mtcoding.blog.model.Reply;
@@ -51,7 +56,7 @@ public class ReplyController {
     }
 
     @PostMapping("/reply/{id}/delete")
-    public String delete(@PathVariable Integer id) { // ! 1. PathVariable 값 받기
+    public String delete(@PathVariable Integer id, BoardDetailDTO boardDetailDTO) { // ! 1. PathVariable 값 받기
 
         // ! 2.인증검사
         // session에 접근해서 sessionUser 키값을 가져오세요
@@ -62,16 +67,16 @@ public class ReplyController {
             return "redirect:/loginForm"; // 401
         }
         // ! 3. 권한검사
-        // Reply reply = replyRepository.findByBoardId(id);
-        // if (reply.getUser().getId() != sessionUser.getId()) {
-        // return "redirect:/40x"; // 403 권한없음
-        // }
+        List<Reply> reply = replyRepository.findByUserId(boardDetailDTO.getReplyUserId());
+        if (reply.get(0).getUser().getId() != sessionUser.getId()) {
+            return "redirect:/40x"; // 403 권한없음
+        }
 
         // ! 4. 모델에 접근해서 삭제
         // boardRepository.deleteById(id); 호출하세요 -> 리턴을 받지 마세요
         // delete from board_tb where id = :id
         replyRepository.deleteById(id);
 
-        return "redirect:/";
+        return "redirect:/board/" + boardDetailDTO.getBoardId();
     }
 }
