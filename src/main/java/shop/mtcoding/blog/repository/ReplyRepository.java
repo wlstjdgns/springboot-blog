@@ -12,11 +12,24 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog.dto.ReplyWriteDTO;
 import shop.mtcoding.blog.model.Reply;
 
-// $ 컨트롤러,레파지토리와 스프링에서 띄워주는 엔티티매니저,HttpSession 다 떠잇는거야.
+// UserController, BoardController, ReplyController, ErrorController
+// UserRepository, BoardRepository, ReplyRepository
+// EntityManager, HttpSession
 @Repository
 public class ReplyRepository {
+
     @Autowired
     private EntityManager em;
+
+    public Reply findById(int id) {
+        System.out.println("테스트 : 1");
+        Query query = em.createNativeQuery("select * from reply_tb where id = :id", Reply.class);
+        System.out.println("테스트 : 2");
+        query.setParameter("id", id);
+        System.out.println("테스트 : 3");
+        return (Reply) query.getSingleResult();
+
+    }
 
     public List<Reply> findByBoardId(Integer boardId) {
         Query query = em.createNativeQuery("select * from reply_tb where board_id = :boardId", Reply.class);
@@ -24,25 +37,16 @@ public class ReplyRepository {
         return query.getResultList();
     }
 
-    public List<Reply> findByUserId(Integer userId) {
-        Query query = em.createNativeQuery("select * from reply_tb where user_id = :userId", Reply.class);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-
-    @Transactional // * 트랜잭션이 적용된 프록시 객체 생성 /프록시 객체는 해당 어노테이션이 포함된 메서드가 호출될 경우
-    // * 트랜잭션을 시작하고 커밋 or 롤백을 수행한다. CheckedExcoption or 기준 커밋/롤백
-    public void save(ReplyWriteDTO replyWriteDTO, Integer userId) {// $ 컨트롤러가 디비인서트하려고 받은걸 얘가 전달 받아야하는거야.
-
+    @Transactional
+    public void save(ReplyWriteDTO replyWriteDTO, Integer userId) {
         Query query = em
-                .createNativeQuery("insert into reply_tb(comment,board_id,user_id) values(:comment,:boardId,:userId) ");
+                .createNativeQuery(
+                        "insert into reply_tb(comment, board_id, user_id) values(:comment, :boardId, :userId)");
 
         query.setParameter("comment", replyWriteDTO.getComment());
         query.setParameter("boardId", replyWriteDTO.getBoardId());
         query.setParameter("userId", userId);
-
-        query.executeUpdate(); // * mall참고 //* 쿼리를 전송 */ 쿼리를 DBMS에게 한다.
-
+        query.executeUpdate();
     }
 
     @Transactional
@@ -50,6 +54,7 @@ public class ReplyRepository {
         Query query = em
                 .createNativeQuery(
                         "delete from reply_tb where id = :id");
+
         query.setParameter("id", id);
         query.executeUpdate();
     }
