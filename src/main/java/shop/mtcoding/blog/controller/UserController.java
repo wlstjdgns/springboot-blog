@@ -61,20 +61,17 @@ public class UserController {
 
     }
 
-    // ! 실무
+    // ! 실무 (AOP)
     @PostMapping("/join")
     public String join(JoinDTO joinDTO) {
-        if (joinDTO.getUsername() == null || joinDTO.getUsername().isEmpty()) {
-            return "redirect:/40x";
-        } // ? validation check(유효성검사)
-        if (joinDTO.getPassword() == null || joinDTO.getPassword().isEmpty()) {
-            return "redirect:/40x";
-        }
-        if (joinDTO.getEmail() == null || joinDTO.getEmail().isEmpty()) {
-            return "redirect:/40x";
-        }
 
+        // ! 유효성검사
+
+        // ! 해당 유저 있는지 검사
+        // * JPA(기본 메서드, 기술에 대한 원리 공부)
         User user = userRepository.findByUsername(joinDTO.getUsername());
+
+        // $ 에러를 담당하는 클래스를 하나 생성 -> 위임 자바스크립트로 변경( )
         if (user != null) {
             return "redirect:/50x";
         }
@@ -83,7 +80,10 @@ public class UserController {
         joinDTO.setPassword(encPassword);
         System.out.println(encPassword.length());
 
-        userRepository.save(joinDTO); // 핵심 기능
+        // ! 핵심 기능
+        userRepository.save(joinDTO);
+
+        // $ 유저서비스.회원가입()
         return "redirect:/loginForm";
     }
     // try {
@@ -124,11 +124,11 @@ public class UserController {
 
     @GetMapping("/user/updateForm")
     public String updateForm(HttpServletRequest request) {
-        // 세션값을 안쓰는 이유 1. 회원정보 - (많은정보)
+        // * 세션값을 안쓰는 이유 1. 회원정보 - (많은정보)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             return "redirect:/loginForm"; // 401
-        } // 유니크는 인덱스로 탄다.
+        } // *유니크는 인덱스로 탄다.
         User user = userRepository.findByUsername(sessionUser.getUsername());
         request.setAttribute("user", user);
         return "user/updateForm";
@@ -136,7 +136,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout() {
-        session.invalidate(); // 세션 무효화 (서랍비우기)
+        session.invalidate(); // * 세션 무효화 (서랍비우기)
 
         return "redirect:/";
     }

@@ -26,25 +26,25 @@ public class ReplyController {
     @PostMapping("/reply/{id}/delete")
     public String delete(@PathVariable Integer id, Integer boardId) {
 
-        // 유효성 검사
+        // ! 유효성 검사
         if (boardId == null) {
             return "redirect:/40x";
         }
 
-        // 인증체크
+        // ! 인증체크
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             return "redirect:/loginForm";
         }
 
-        // 권한체크
+        // ! 권한체크
         Reply reply = replyRepository.findById(id);
 
         if (reply.getUser().getId() != sessionUser.getId()) {
             return "redirect:/40x"; // 403
         }
 
-        // 핵심로직
+        // ! 핵심로직
         replyRepository.deleteById(id);
 
         return "redirect:/board/" + boardId;
@@ -52,7 +52,7 @@ public class ReplyController {
 
     @PostMapping("/reply/save")
     public String save(ReplyWriteDTO replyWriteDTO) {
-        // comment, boardId 유효성 검사
+        // ! comment, boardId 유효성 검사
         if (replyWriteDTO.getBoardId() == null) {
             return "redirect:/40x";
         }
@@ -60,13 +60,13 @@ public class ReplyController {
             return "redirect:/40x";
         }
 
-        // 인증 검사
+        // ! 인증 검사
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             return "redirect:/loginForm";
         }
 
-        // 댓글 쓰기
+        // ! 댓글 쓰기
         replyRepository.save(replyWriteDTO, sessionUser.getId());
 
         return "redirect:/board/" + replyWriteDTO.getBoardId();

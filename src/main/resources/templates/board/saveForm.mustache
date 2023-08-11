@@ -14,7 +14,8 @@
         <div class="card-body">
             <form action="/board/save" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter title" name="title" required maxlength="100">
+                    <input type="text" class="form-control" placeholder="Enter title" name="title" required maxlength="100"
+                     pattern=".*\S+.*" title="공백을 포함한 문자열을 입력하세요." required>
                 </div>
                 <div class="mb-3">
                     <textarea class="form-control" rows="5" name="content"></textarea>

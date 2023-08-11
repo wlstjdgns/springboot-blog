@@ -29,8 +29,8 @@ public class BoardRepository {
     // object[1] = 제목1
     public int count() {
         Query query = em.createNativeQuery("select count(*) from board_tb");
-        // 원래는 Object 배열로 리턴 받는다, Object 배열은 칼럼의 연속이다.
-        // 그룹함수를 써서, 하나의 칼럼을 조회하면, Object로 리턴된다.
+        // * 원래는 Object 배열로 리턴 받는다, Object 배열은 칼럼의 연속이다.
+        // * 그룹함수를 써서, 하나의 칼럼을 조회하면, Object로 리턴된다.
         BigInteger count = (BigInteger) query.getSingleResult();
         return count.intValue();
     }
@@ -38,8 +38,8 @@ public class BoardRepository {
     public int count(String keyword) {
         Query query = em.createNativeQuery("select count(*) from board_tb where title like :keyword");
         query.setParameter("keyword", "%" + keyword + "%");
-        // 원래는 Object 배열로 리턴 받는다, Object 배열은 칼럼의 연속이다.
-        // 그룹함수를 써서, 하나의 칼럼을 조회하면, Object로 리턴된다.
+        // * 원래는 Object 배열로 리턴 받는다, Object 배열은 칼럼의 연속이다.
+        // * 그룹함수를 써서, 하나의 칼럼을 조회하면, Object로 리턴된다.
         BigInteger count = (BigInteger) query.getSingleResult();
         return count.intValue();
     }

@@ -10,8 +10,9 @@
             <form action="/join" method="POST" enctype="application/x-www-form-urlencoded" onsubmit="return valid()">
                 <div class="mb-3">
                     <input type="text" id="username" class="form-control" placeholder="Enter username" name="username"
-                        required maxlength="20" onchange="usernameChange()">
-                    <button type="button" onclick="check()">중복체크</button>
+                        required maxlength="20" onchange="usernameChange()" >
+                        <button type="button" onclick="check()">중복체크</button>
+                    
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password" required

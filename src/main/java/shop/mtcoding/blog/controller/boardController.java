@@ -44,15 +44,15 @@ public class BoardController {
     // http://localhost:8080?num=4
     @GetMapping({ "/", "/board" })
     public String index(
-            String keyword,
+            @RequestParam(defaultValue = " ") String keyword,
             @RequestParam(defaultValue = "0") Integer page,
             HttpServletRequest request) {
-        // 1. 유효성 검사 X
-        // 2. 인증검사 X
+        // ! 1. 유효성 검사 X
+        // ! 2. 인증검사 X
 
         List<Board> boardList = null;
         int totalCount = 0;
-        if (keyword == null) {
+        if (keyword.isBlank()) {
             boardList = boardRepository.findAll(page); // page = 1
             totalCount = boardRepository.count();
         } else {
@@ -84,11 +84,11 @@ public class BoardController {
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, UpdateDTO updateDTO) {
-        // 1. 인증 검사
+        // ! 1. 인증 검사
 
-        // 2. 권한 체크
+        // ! 2. 권한 체크
 
-        // 3. 핵심 로직
+        // ! 3. 핵심 로직
         // update board_tb set title = :title, content = :content where id = :id
         boardRepository.update(updateDTO, id);
 
@@ -97,11 +97,11 @@ public class BoardController {
 
     @GetMapping("/board/{id}/updateForm")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-        // 1. 인증 검사
+        // ! 1. 인증 검사
 
-        // 2. 권한 체크
+        // ! 2. 권한 체크
 
-        // 3. 핵심 로직
+        // ! 3. 핵심 로직
         Board board = boardRepository.findById(id);
         request.setAttribute("board", board);
 
@@ -109,25 +109,25 @@ public class BoardController {
     }
 
     @PostMapping("/board/{id}/delete")
-    public String delete(@PathVariable Integer id) { // 1. PathVariable 값 받기
-        // 2.인증검사
-        // session에 접근해서 sessionUser 키값을 가져오세요
-        // null 이면, 로그인페이지로 보내고
-        // null 아니면, 3번을 실행하세요.
+    public String delete(@PathVariable Integer id) { // ! 1. PathVariable 값 받기
+        // ! 2.인증검사
+        // * session에 접근해서 sessionUser 키값을 가져오세요
+        // * null 이면, 로그인페이지로 보내고
+        // * null 아니면, 3번을 실행하세요.
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null) {
             return "redirect:/loginForm"; // 401
         }
 
-        // 3. 권한검사
+        // ! 3. 권한검사
         Board board = boardRepository.findById(id);
         if (board.getUser().getId() != sessionUser.getId()) {
             return "redirect:/40x"; // 403 권한없음
         }
 
-        // 4. 모델에 접근해서 삭제
-        // boardRepository.deleteById(id); 호출하세요 -> 리턴을 받지 마세요
-        // delete from board_tb where id = :id
+        // ! 4. 모델에 접근해서 삭제
+        // * boardRepository.deleteById(id); 호출하세요 -> 리턴을 받지 마세요
+        // * delete from board_tb where id = :id
         boardRepository.deleteById(id);
 
         return "redirect:/";
@@ -162,7 +162,7 @@ public class BoardController {
     @GetMapping("/v2/board/{id}")
     public BoardDetailDTOV2 detailV2(@PathVariable Integer id) {
         session.setAttribute("sessionUser", new User());
-        User sessionUser = (User) session.getAttribute("sessionUser"); // 세션접근
+        User sessionUser = (User) session.getAttribute("sessionUser"); // * 세션접근
         List<BoardDetailDTO> dtos = null;
         BoardDetailDTOV2 dtoV2 = null;
         if (sessionUser == null) {

@@ -22,13 +22,12 @@ public class ReplyRepository {
     private EntityManager em;
 
     public Reply findById(int id) {
-        System.out.println("테스트 : 1");
+        // System.out.println("테스트 : 1");
         Query query = em.createNativeQuery("select * from reply_tb where id = :id", Reply.class);
-        System.out.println("테스트 : 2");
+        // System.out.println("테스트 : 2");
         query.setParameter("id", id);
-        System.out.println("테스트 : 3");
+        // System.out.println("테스트 : 3");
         return (Reply) query.getSingleResult();
-
     }
 
     public List<Reply> findByBoardId(Integer boardId) {
@@ -42,7 +41,6 @@ public class ReplyRepository {
         Query query = em
                 .createNativeQuery(
                         "insert into reply_tb(comment, board_id, user_id) values(:comment, :boardId, :userId)");
-
         query.setParameter("comment", replyWriteDTO.getComment());
         query.setParameter("boardId", replyWriteDTO.getBoardId());
         query.setParameter("userId", userId);
@@ -54,7 +52,6 @@ public class ReplyRepository {
         Query query = em
                 .createNativeQuery(
                         "delete from reply_tb where id = :id");
-
         query.setParameter("id", id);
         query.executeUpdate();
     }
